@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { webUrl } from "@/lib/share";
 
 interface Props {
   onMessageSent: () => void;
@@ -9,22 +10,19 @@ interface Props {
 export default function MessageInput({ onMessageSent }: Props) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   function detectType(value: string): "text" | "link" {
-    try {
-      new URL(value);
-      return "link";
-    } catch {
-      return "text";
-    }
+    return webUrl(value) ? "link" : "text";
   }
 
   async function handleSend() {
-    if (!text.trim()) return;
+    if (loading || !text.trim()) return;
 
     setLoading(true);
+    setError("");
     try {
-      await fetch("/api/messages", {
+      const response = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -32,10 +30,14 @@ export default function MessageInput({ onMessageSent }: Props) {
           type: detectType(text.trim()),
         }),
       });
+      if (!response.ok) {
+        const result = await response.json();
+        throw new Error(result.error || "Failed to send message.");
+      }
       setText("");
       onMessageSent();
     } catch (error) {
-      console.error("Failed to send message", error);
+      setError(error instanceof Error ? error.message : "Failed to send. Please retry.");
     } finally {
       setLoading(false);
     }
@@ -57,7 +59,9 @@ export default function MessageInput({ onMessageSent }: Props) {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
         rows={3}
+        aria-label="Message or webpage URL"
       />
+      {error && <p role="alert" style={{ margin: 0, color: "#cc0000" }}>{error}</p>}
       <button
         style={{
           ...styles.button,

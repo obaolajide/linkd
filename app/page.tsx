@@ -23,7 +23,7 @@ export default function Home() {
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       setMessages(data);
-    } catch (err) {
+    } catch {
       setError("Could not load messages. Check your connection.");
     } finally {
       setLoading(false);
@@ -32,6 +32,15 @@ export default function Home() {
 
   useEffect(() => {
     fetchMessages();
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === "visible") void fetchMessages();
+    };
+    window.addEventListener("focus", refreshWhenVisible);
+    document.addEventListener("visibilitychange", refreshWhenVisible);
+    return () => {
+      window.removeEventListener("focus", refreshWhenVisible);
+      document.removeEventListener("visibilitychange", refreshWhenVisible);
+    };
   }, [fetchMessages]);
 
   return (

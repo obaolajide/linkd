@@ -9,6 +9,63 @@ A modern messaging application built with Next.js, React, and MongoDB. Share and
 - Messages stored in MongoDB
 - Full-stack TypeScript support
 - Clean and responsive UI
+- Android Chrome share destination (install Linked first)
+
+## Share webpages from Android
+
+This checkout uses one shared inbox. It has no login, user accounts, or per-user
+ownership. Shared and manually submitted links use the existing MongoDB collection
+through the same `/api/messages` endpoint. Use the same deployment on both devices.
+
+1. Deploy this version over HTTPS with the existing `MONGODB_URI` configured.
+2. Open the deployment in **Chrome on Android** and install **Linked** using Chrome's
+   menu (Install app / Add to Home screen, then Install). A simple browser shortcut
+   is not enough. If an older installation does not show in Share, reinstall it
+   after deploying the updated manifest.
+3. From any webpage in Chrome, tap **Share → Linked**. Linked opens a receiving
+   page and automatically saves the URL. It reports success or offers Retry if
+   saving fails; no manual paste or submit is needed.
+4. Open the same deployment in Brave on your laptop. The link appears in the
+   existing inbox and opens in a new tab. An already-open inbox reloads when you
+   focus it; the Refresh button also remains available.
+
+Android installs the share destination from `public/manifest.webmanifest`.
+The GET `/share` page accepts `url`, `text`, and `title`, extracts the first valid
+HTTP(S) URL, and POSTs to the existing API. GET alone does not write to MongoDB.
+The optional title is displayed as the link label; shared text is retained as
+metadata. Query parameters are cleared from the current history entry after save.
+Shared URLs can still occur in server access logs because this is a GET target.
+
+Repeated normalized URLs reuse an existing link, including links saved manually.
+Fragments and query parameters are preserved; unrelated text messages are never
+deduplicated. A unique sparse `linkKey` index prevents simultaneous new-link
+submissions from creating duplicates. Existing rows do not need a data migration;
+the MongoDB user must have permission to create the new index.
+
+Network access is required to save. The service worker provides an offline retry
+message and does not cache the inbox or queue background submissions. On an offline
+share, reconnect and reload the receiving page. On a server error, use Retry.
+
+### Verification
+
+Run `npm test`, `npm run lint`, and `npm run build`. Automated tests cover share
+payload extraction, validation, manifest/icons, and duplicate storage behavior
+using a mocked database. They do not prove Android share-sheet registration or
+live MongoDB persistence.
+
+After deployment, complete this real-device check:
+
+- Install from Android Chrome and confirm Linked appears in Chrome's Share menu.
+- Share an article, an X post, and a GitHub URL; confirm the success message.
+- Share the same URL twice; verify only one inbox item appears.
+- Open the deployment in Brave and click the saved URLs.
+- Test `/share`, `/share?text=not-a-url`, and a disconnected share; confirm useful
+  errors and successful retry after reconnecting.
+- Confirm manual text and URL submissions still work.
+
+For a desktop receiver smoke check, visit
+`/share?title=Example&text=https%3A%2F%2Fexample.com%2F` on your deployment.
+This intentionally saves an example link into the shared inbox.
 
 ## Tech Stack
 

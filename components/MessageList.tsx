@@ -1,10 +1,13 @@
 "use client";
 
+import { webUrl } from "@/lib/share";
+
 interface Message {
   _id: string;
   text: string;
   type: "text" | "link";
   createdAt: string;
+  title?: string;
 }
 
 interface Props {
@@ -48,9 +51,9 @@ export default function MessageList({ messages }: Props) {
           </div>
 
           <div style={styles.textRow}>
-            {msg.type === "link" ? (
+            {msg.type === "link" && webUrl(msg.text) ? (
               <a href={msg.text} target="_blank" rel="noopener noreferrer" style={styles.link}>
-                {msg.text}
+                {msg.title || msg.text}
               </a>
             ) : (
               <p style={styles.text}>{msg.text}</p>
