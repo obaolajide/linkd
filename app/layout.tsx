@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import PwaRegistration from "@/components/PwaRegistration";
 
 export const metadata: Metadata = {
@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: "Personal sync inbox",
   manifest: "/manifest.webmanifest",
 };
+
+export const viewport: Viewport = { themeColor: "#000000" };
 
 export default function RootLayout({
   children,
@@ -15,8 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body style={{ margin: 0, padding: 0, backgroundColor: "#f7f7f7" }}>
-        <PwaRegistration />
-        {children}
+        <PwaRegistration>{children}</PwaRegistration>
       </body>
     </html>
   );

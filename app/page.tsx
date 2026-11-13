@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import MessageList from "@/components/MessageList";
 import MessageInput from "@/components/MessageInput";
 import screenStyles from "./page.module.css";
+import AndroidShareSetup from "@/components/AndroidShareSetup";
 
 interface Message {
   _id: string;
@@ -57,6 +58,8 @@ export default function Home() {
           ↻ Refresh
         </button>
       </div>
+
+      <AndroidShareSetup />
 
       {/* Body */}
       <div style={styles.body}>

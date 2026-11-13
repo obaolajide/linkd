@@ -37,7 +37,7 @@ test("validate share metadata while preserving manual text and links", () => {
 
 test("manifest routes all supported fields to the receiving page with install icons", () => {
   const manifest = JSON.parse(readFileSync(new URL("../public/manifest.webmanifest", import.meta.url)));
-  assert.deepEqual(manifest.share_target, { action: "/share", method: "GET", params: { title: "title", text: "text", url: "url" } });
+  assert.deepEqual(manifest.share_target, { action: "/share", method: "GET", enctype: "application/x-www-form-urlencoded", params: { title: "title", text: "text", url: "url" } });
   for (const size of [192, 512]) {
     const icon = manifest.icons.find(icon => icon.sizes === `${size}x${size}`);
     const png = readFileSync(new URL(`../public${icon.src}`, import.meta.url));

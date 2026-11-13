@@ -18,10 +18,17 @@ ownership. Shared and manually submitted links use the existing MongoDB collecti
 through the same `/api/messages` endpoint. Use the same deployment on both devices.
 
 1. Deploy this version over HTTPS with the existing `MONGODB_URI` configured.
+   The current production address is [linkd-pearl.vercel.app](https://linkd-pearl.vercel.app).
+   Generated Vercel preview addresses may require a Vercel login and should not be
+   used for Android installation.
 2. Open the deployment in **Chrome on Android** and install **Linked** using Chrome's
    menu (Install app / Add to Home screen, then Install). A simple browser shortcut
    is not enough. If an older installation does not show in Share, reinstall it
    after deploying the updated manifest.
+   The inbox's **Set up Android sharing** panel offers **Install Linked** when
+   Chrome makes its installation prompt available, plus manual installation steps
+   and installation-file readiness feedback. Readiness does not prove that Android
+   has registered the installed app in its Share menu.
 3. From any webpage in Chrome, tap **Share → Linked**. Linked opens a receiving
    page and automatically saves the URL. It reports success or offers Retry if
    saving fails; no manual paste or submit is needed.
@@ -35,6 +42,9 @@ HTTP(S) URL, and POSTs to the existing API. GET alone does not write to MongoDB.
 The optional title is displayed as the link label; shared text is retained as
 metadata. Query parameters are cleared from the current history entry after save.
 Shared URLs can still occur in server access logs because this is a GET target.
+The receiver handles successive shares into the same open window. A successful
+save replaces the current history entry with `/share?saved=1`, so reloading the
+confirmation does not submit it again.
 
 Repeated normalized URLs reuse an existing link, including links saved manually.
 Fragments and query parameters are preserved; unrelated text messages are never
@@ -50,7 +60,8 @@ share, reconnect and reload the receiving page. On a server error, use Retry.
 
 Run `npm test`, `npm run lint`, and `npm run build`. Automated tests cover share
 payload extraction, validation, manifest/icons, and duplicate storage behavior
-using a mocked database. They do not prove Android share-sheet registration or
+using a mocked database, plus receiving a second share in the same window and
+handling server errors. They do not prove Android share-sheet registration or
 live MongoDB persistence.
 
 After deployment, complete this real-device check:
