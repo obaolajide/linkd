@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import MessageList from "@/components/MessageList";
 import MessageInput from "@/components/MessageInput";
+import screenStyles from "./page.module.css";
 
 interface Message {
   _id: string;
@@ -47,7 +48,11 @@ export default function Home() {
     <div style={styles.page}>
       {/* Header */}
       <div style={styles.header}>
-        <h1 style={styles.title}>linkd</h1>
+        <h1 style={styles.title}>
+          linkd
+          <span className={screenStyles.desktopDot} role="img" aria-label="Desktop screen" title="Desktop screen" />
+          <span className={screenStyles.phoneDot} role="img" aria-label="Phone screen" title="Phone screen" />
+        </h1>
         <button style={styles.refreshBtn} onClick={fetchMessages}>
           ↻ Refresh
         </button>
@@ -101,6 +106,9 @@ const styles: Record<string, React.CSSProperties> = {
     zIndex: 10,
   },
   title: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
     margin: 0,
     fontSize: "22px",
     fontWeight: "700",
