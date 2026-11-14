@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "linkd",
   description: "Personal sync inbox",
   manifest: "/manifest.webmanifest",
+  icons: { apple: "/icons/arrow-180.png" },
 };
 
 export const viewport: Viewport = { themeColor: "#000000" };
