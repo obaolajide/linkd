@@ -8,7 +8,7 @@ URLs or send text directly in the inbox.
 ## Android sharing
 
 1. Open Linked in Chrome on Android.
-2. Tap **Install Linked**, or use Chrome's **Add to Home screen** menu.
+2. Open Chrome's **Add to Home screen** menu.
 3. Choose **Install**. A home-screen shortcut won't appear in the Share menu.
 4. From a webpage, tap **Share → Linked**. Use **More** if it isn't in the first list.
 5. Open Linked in Brave on your laptop to find the saved link.
